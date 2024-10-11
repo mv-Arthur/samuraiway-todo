@@ -4,10 +4,13 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import CreateIcon from "@mui/icons-material/Create";
 import Button from "@mui/material/Button";
 import { Form } from "../form/Form";
+import { ShowStateType } from "../task/Task";
 
 type PropsType = {
      children: React.ReactNode;
-     show: boolean;
+     show: ShowStateType;
+     setShow?: (value: boolean) => void;
+     onSubmit?: (value: string) => void;
 };
 
 type OnEditParamType = "view" | "edit";
@@ -16,12 +19,20 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
      const [editMode, setEditMode] = React.useState(false);
 
      const onEdit = React.useCallback((type: OnEditParamType) => {
-          if (type === "edit") setEditMode(true);
-          if (type === "view") setEditMode(false);
+          if (type === "edit") {
+               setEditMode(true);
+               props?.setShow?.(true);
+          }
+          if (type === "view") {
+               setEditMode(false);
+               props?.setShow?.(false);
+          }
      }, []);
 
      const submitHandle = React.useCallback((value: string) => {
-          console.log(value);
+          props?.onSubmit?.(value);
+          setEditMode(false);
+          props?.setShow?.(false);
      }, []);
 
      return (
@@ -33,7 +44,7 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
                )}
 
                <>
-                    {props.show && (
+                    {(props.show.onEdit || props.show.onMouse) && (
                          <>
                               <Button variant={!editMode ? "contained" : "text"} onClick={() => onEdit("view")}>
                                    <RemoveRedEyeIcon />

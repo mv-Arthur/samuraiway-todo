@@ -21,12 +21,27 @@ function App() {
           setTasks((tasks) => tasks.filter((task) => task.id !== taskId));
      };
 
+     const updateTask = (taskId: string, title: string) => {
+          setTasks((tasks) => tasks.map((task) => (task.id === taskId ? { ...task, title: title } : task)));
+     };
+
+     const setCheked = (taskId: string, cheked: boolean) => {
+          setTasks((tasks) => tasks.map((task) => (task.id === taskId ? { ...task, cheked } : task)));
+     };
+
      return (
           <div className="App">
-               <Form onSubmit={submitHanlde} />
+               <Form clearAfterSubmit onSubmit={submitHanlde} />
                <div ref={parent}>
                     {tasks.map((task) => (
-                         <Task key={task.id} cheked={task.cheked} id={task.id} onRemove={deleteTask}>
+                         <Task
+                              key={task.id}
+                              updateTask={updateTask}
+                              cheked={task.cheked}
+                              id={task.id}
+                              onRemove={deleteTask}
+                              setCheked={setCheked}
+                         >
                               {task.title}
                          </Task>
                     ))}

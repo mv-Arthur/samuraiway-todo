@@ -9,25 +9,46 @@ type PropsType = {
      children?: React.ReactNode;
      cheked: boolean;
      onRemove: (taskId: string) => void;
+     updateTask: (taskId: string, title: string) => void;
+     setCheked: (taskId: string, cheked: boolean) => void;
 };
 
-export const Task: React.FC<PropsType> = React.memo((props) => {
-     const [show, setShow] = React.useState(false);
-     const parent = React.useRef(null);
+export type ShowStateType = {
+     onMouse: boolean;
+     onEdit: boolean;
+};
 
-     const mouseOverHandle = React.useCallback(() => setShow(true), []);
+export const Task: React.FC<PropsType> = React.memo(({ id, onRemove, ...props }) => {
+     const [show, setShow] = React.useState<ShowStateType>({
+          onMouse: false,
+          onEdit: false,
+     });
 
-     const mouseOutHandle = React.useCallback(() => setShow(false), []);
+     const mouseOverHandle = React.useCallback(() => setShow((prev) => ({ ...prev, onMouse: true })), []);
 
-     const clickHandle = React.useCallback(() => props.onRemove(props.id), []);
+     const mouseOutHandle = React.useCallback(() => setShow((prev) => ({ ...prev, onMouse: false })), []);
+
+     const clickHandle = React.useCallback(() => onRemove(id), [id, onRemove]);
+
+     const setShowOnEditHandle = (value: boolean) => setShow((prev) => ({ ...prev, onEdit: value }));
+
+     const submitHandle = (value: string) => {
+          props.updateTask(id, value);
+     };
+
+     const changeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+          props.setCheked(id, e.currentTarget.checked);
+     };
 
      return (
           <S.Wrapper onMouseOver={mouseOverHandle} onMouseOut={mouseOutHandle}>
-               <Checkbox checked={props.cheked} />
+               <Checkbox onChange={changeHandle} checked={props.cheked} />
 
-               <EditbleSpan show={show}>{props.children}</EditbleSpan>
+               <EditbleSpan onSubmit={submitHandle} setShow={setShowOnEditHandle} show={show}>
+                    {props.children}
+               </EditbleSpan>
 
-               {show && (
+               {(show.onMouse || show.onEdit) && (
                     <Button color="error" variant="contained" onClick={clickHandle}>
                          <DeleteIcon />
                     </Button>

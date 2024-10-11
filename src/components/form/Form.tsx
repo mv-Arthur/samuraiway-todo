@@ -6,6 +6,7 @@ type PropsType = {
      limit?: 20;
      onSubmit: (value: string) => void;
      defaultValue?: string;
+     clearAfterSubmit?: boolean;
 };
 
 export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) => {
@@ -22,7 +23,7 @@ export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) =
 
           if (!haveAError && !!value.trimEnd().length) {
                props.onSubmit(value);
-               setValue("");
+               if (props.clearAfterSubmit) setValue("");
           }
      };
 
@@ -35,6 +36,7 @@ export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) =
                     error={haveAError}
                     value={value}
                />
+
                <Button
                     type="submit"
                     variant="contained"
