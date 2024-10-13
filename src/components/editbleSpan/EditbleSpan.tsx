@@ -18,7 +18,7 @@ type OnEditParamType = "view" | "edit";
 export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
      const [editMode, setEditMode] = React.useState(false);
 
-     const onEdit = React.useCallback((type: OnEditParamType) => {
+     const onEdit = (type: OnEditParamType) => {
           if (type === "edit") {
                setEditMode(true);
                props?.setShow?.(true);
@@ -27,18 +27,23 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
                setEditMode(false);
                props?.setShow?.(false);
           }
-     }, []);
+     };
 
-     const submitHandle = React.useCallback((value: string) => {
+     const submitHandle = (value: string) => {
           props?.onSubmit?.(value);
           setEditMode(false);
           props?.setShow?.(false);
-     }, []);
+     };
 
      return (
           <>
                {editMode ? (
-                    <Form defaultValue={props.children?.toString()} onSubmit={submitHandle} limit={20} />
+                    <Form
+                         placeholder="change title value"
+                         defaultValue={props.children?.toString()}
+                         onSubmit={submitHandle}
+                         limit={20}
+                    />
                ) : (
                     <S.Title>{props.children}</S.Title>
                )}

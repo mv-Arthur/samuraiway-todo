@@ -3,10 +3,11 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { S } from "./form.styled";
 
 type PropsType = {
-     limit?: 20;
+     limit?: number;
      onSubmit: (value: string) => void;
      defaultValue?: string;
      clearAfterSubmit?: boolean;
+     placeholder: string;
 };
 
 export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) => {
@@ -32,7 +33,7 @@ export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) =
                <TextField
                     onChange={changeHandle}
                     variant="outlined"
-                    label={haveAError ? "text limit exceeded" : "write a task title"}
+                    label={haveAError ? "text limit exceeded" : props.placeholder}
                     error={haveAError}
                     value={value}
                />

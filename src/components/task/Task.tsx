@@ -24,11 +24,11 @@ export const Task: React.FC<PropsType> = React.memo(({ id, onRemove, ...props })
           onEdit: false,
      });
 
-     const mouseOverHandle = React.useCallback(() => setShow((prev) => ({ ...prev, onMouse: true })), []);
+     const mouseOverHandle = () => setShow((prev) => ({ ...prev, onMouse: true }));
 
-     const mouseOutHandle = React.useCallback(() => setShow((prev) => ({ ...prev, onMouse: false })), []);
+     const mouseOutHandle = () => setShow((prev) => ({ ...prev, onMouse: false }));
 
-     const clickHandle = React.useCallback(() => onRemove(id), [id, onRemove]);
+     const clickHandle = () => onRemove(id);
 
      const setShowOnEditHandle = (value: boolean) => setShow((prev) => ({ ...prev, onEdit: value }));
 
