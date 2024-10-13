@@ -19,19 +19,6 @@ export type ShowStateType = {
 };
 
 export const Task: React.FC<PropsType> = React.memo(({ id, onRemove, ...props }) => {
-     const [show, setShow] = React.useState<ShowStateType>({
-          onMouse: false,
-          onEdit: false,
-     });
-
-     const mouseOverHandle = () => setShow((prev) => ({ ...prev, onMouse: true }));
-
-     const mouseOutHandle = () => setShow((prev) => ({ ...prev, onMouse: false }));
-
-     const clickHandle = () => onRemove(id);
-
-     const setShowOnEditHandle = (value: boolean) => setShow((prev) => ({ ...prev, onEdit: value }));
-
      const submitHandle = (value: string) => {
           props.updateTask(id, value);
      };
@@ -41,18 +28,12 @@ export const Task: React.FC<PropsType> = React.memo(({ id, onRemove, ...props })
      };
 
      return (
-          <S.Wrapper onMouseOver={mouseOverHandle} onMouseOut={mouseOutHandle}>
+          <S.Wrapper>
                <Checkbox onChange={changeHandle} checked={props.cheked} />
 
-               <EditbleSpan onSubmit={submitHandle} setShow={setShowOnEditHandle} show={show}>
+               <EditbleSpan id={id} onRemove={onRemove} onSubmit={submitHandle}>
                     {props.children}
                </EditbleSpan>
-
-               {(show.onMouse || show.onEdit) && (
-                    <Button color="error" variant="contained" onClick={clickHandle}>
-                         <DeleteIcon />
-                    </Button>
-               )}
           </S.Wrapper>
      );
 });

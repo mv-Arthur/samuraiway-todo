@@ -3,6 +3,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { TaskType } from "../../App";
 import { Form } from "../form/Form";
 import { Task } from "../task/Task";
+import { EditbleSpan } from "../editbleSpan/EditbleSpan";
 type PropsType = {
      id: string;
      title: string;
