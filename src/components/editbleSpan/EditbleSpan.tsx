@@ -8,7 +8,6 @@ import { ShowStateType } from "../task/Task";
 import DeleteIcon from "@mui/icons-material/Delete";
 type PropsType = {
      children: React.ReactNode;
-
      onSubmit?: (value: string) => void;
      onRemove?: (taskId: string) => void;
      id?: string;
@@ -48,13 +47,13 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
 
      const clickDeleteHandle = () => {
           if (props.id && props.onRemove) props.onRemove(props.id);
-          else throw new Error("child prop is not string");
+          else throw new Error("component don't have a id prop");
      };
 
      const clickTitleHandle = () => {
-          if (typeof props.children !== "string") throw new Error("child prop is not string");
+          // if (typeof props.children !== "string") throw new Error("child prop is not string");
 
-          navigator.clipboard.writeText(props.children);
+          navigator.clipboard.writeText(String(props.children));
      };
 
      return (
@@ -74,7 +73,7 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
 
                <>
                     {(show.onEdit || show.onMouse) && (
-                         <>
+                         <S.Controls>
                               <Button variant={!editMode ? "contained" : "text"} onClick={() => onEdit("view")}>
                                    <RemoveRedEyeIcon />
                               </Button>
@@ -84,7 +83,7 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
                               <Button color="error" variant="contained" onClick={clickDeleteHandle}>
                                    <DeleteIcon />
                               </Button>
-                         </>
+                         </S.Controls>
                     )}
                </>
           </S.Wrapper>
@@ -96,15 +95,23 @@ const S = {
           display: flex;
           align-items: center;
           gap: 10px;
+          position: relative;
+          width: 504px;
      `,
      Title: styled.span`
           font-weight: 300;
           font-size: 17px;
-          width: 304px;
+          /* width: 304px; */
           word-break: break-all;
           height: 50px;
           transform: translateY(15px);
           user-select: none;
           cursor: pointer;
+     `,
+     Controls: styled.div`
+          /* position: absolute;
+          left: 280px; */
+          display: flex;
+          gap: 10px;
      `,
 };

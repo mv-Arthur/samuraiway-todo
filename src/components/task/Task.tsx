@@ -1,6 +1,5 @@
-import { Button, Checkbox } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
 import React from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { S } from "./task.styled";
 import { EditbleSpan } from "../editbleSpan/EditbleSpan";
 
