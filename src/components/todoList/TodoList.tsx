@@ -1,10 +1,11 @@
 import React from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { FilterValuesType, TaskType } from "../../App";
+import { FilterValuesType } from "../../App";
 import { Form } from "../form/Form";
 import { Task } from "../task/Task";
 import { EditbleSpan } from "../editbleSpan/EditbleSpan";
 import Button from "@mui/material/Button";
+import { TaskType } from "../../state/taskReducer/taskReducer";
 
 type PropsType = {
      id: string;
@@ -42,7 +43,7 @@ export const TodoList: React.FC<PropsType> = React.memo((props) => {
      }
 
      return (
-          <div>
+          <>
                <EditbleSpan id={props.id} onRemove={onRemoveHandle} onSubmit={onEditHandle}>
                     {props.title}
                </EditbleSpan>
@@ -88,6 +89,6 @@ export const TodoList: React.FC<PropsType> = React.memo((props) => {
                          pending
                     </Button>
                </div>
-          </div>
+          </>
      );
 });

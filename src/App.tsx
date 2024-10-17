@@ -5,12 +5,7 @@ import { TodoList } from "./components/todoList/TodoList";
 import Container from "@mui/material/Container";
 import styled from "styled-components";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-
-export type TaskType = {
-     id: string;
-     title: string;
-     cheked: boolean;
-};
+import { TaskType } from "./state/taskReducer/taskReducer";
 
 type TodoListType = {
      id: string;
