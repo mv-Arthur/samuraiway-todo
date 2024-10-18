@@ -6,7 +6,36 @@ type TodoListType = {
      filter: FilterValuesType;
 };
 
-export const todoListReducer = (state: TodoListType[], action: any) => {};
+export const todoListReducer = (state: TodoListType[], action: TodoListReducerActionType): TodoListType[] => {
+     switch (action.type) {
+          case "SET-TODOLIST": {
+               return [{ id: action.payload.id, title: action.payload.title, filter: "all" }, ...state];
+          }
+
+          case "DELETE-TODOLIST": {
+               return state.filter((todoList) => todoList.id !== action.payload.todoListId);
+          }
+
+          case "EDIT-TODOLIST": {
+               return state.map((todoList) =>
+                    todoList.id === action.payload.todoListId ? { ...todoList, title: action.payload.title } : todoList,
+               );
+          }
+
+          case "SET-FILTER": {
+               return state.map((todoList) =>
+                    todoList.id === action.payload.todoListId
+                         ? { ...todoList, filter: action.payload.filter }
+                         : todoList,
+               );
+          }
+
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          default: {
+               return state;
+          }
+     }
+};
 
 type TodoListReducerActionType =
      | SetTodoListACType
@@ -14,16 +43,16 @@ type TodoListReducerActionType =
      | EditTodoListACType
      | SetTodoListFilterHandleType;
 
-type SetTodoListACType = ReturnType<typeof setTodoListAC>;
-const setTodoListAC = (title: string) => {
+export type SetTodoListACType = ReturnType<typeof setTodoListAC>;
+export const setTodoListAC = (id: string, title: string) => {
      return {
           type: "SET-TODOLIST" as const,
-          payload: { title },
+          payload: { id, title },
      };
 };
 
-type DeleteTodoListACType = ReturnType<typeof deleteTodoListAC>;
-const deleteTodoListAC = (todoListId: string) => {
+export type DeleteTodoListACType = ReturnType<typeof deleteTodoListAC>;
+export const deleteTodoListAC = (todoListId: string) => {
      return {
           type: "DELETE-TODOLIST" as const,
           payload: { todoListId },
@@ -31,7 +60,7 @@ const deleteTodoListAC = (todoListId: string) => {
 };
 
 type EditTodoListACType = ReturnType<typeof editTodoListAC>;
-const editTodoListAC = (todoListId: string, title: string) => {
+export const editTodoListAC = (todoListId: string, title: string) => {
      return {
           type: "EDIT-TODOLIST" as const,
           payload: { todoListId, title },
@@ -39,7 +68,7 @@ const editTodoListAC = (todoListId: string, title: string) => {
 };
 
 type SetTodoListFilterHandleType = ReturnType<typeof setTodoListFilterAC>;
-const setTodoListFilterAC = (todoListId: string, filter: FilterValuesType) => {
+export const setTodoListFilterAC = (todoListId: string, filter: FilterValuesType) => {
      return {
           type: "SET-FILTER" as const,
           payload: { todoListId, filter },

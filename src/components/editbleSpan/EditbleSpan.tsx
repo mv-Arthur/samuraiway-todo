@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import { Form } from "../form/Form";
 import { ShowStateType } from "../task/Task";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 type PropsType = {
      children: React.ReactNode;
      onSubmit?: (value: string) => void;
@@ -21,7 +22,7 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
           onMouse: false,
           onEdit: false,
      });
-
+     const [parent] = useAutoAnimate();
      const mouseOverHandle = () => setShow((prev) => ({ ...prev, onMouse: true }));
 
      const mouseOutHandle = () => setShow((prev) => ({ ...prev, onMouse: false }));
@@ -51,27 +52,29 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
      };
 
      const clickTitleHandle = () => {
-          // if (typeof props.children !== "string") throw new Error("child prop is not string");
+          if (typeof props.children !== "string") throw new Error("child prop is not string");
 
           navigator.clipboard.writeText(String(props.children));
      };
 
      return (
           <S.Wrapper onMouseOver={mouseOverHandle} onMouseOut={mouseOutHandle}>
-               {editMode ? (
-                    <Form
-                         placeholder="change title value"
-                         defaultValue={props.children?.toString()}
-                         onSubmit={submitHandle}
-                         limit={20}
-                    />
-               ) : (
-                    <S.Title onClick={clickTitleHandle} onDoubleClick={() => onEdit("edit")}>
-                         {props.children}
-                    </S.Title>
-               )}
+               <div ref={parent}>
+                    {editMode ? (
+                         <Form
+                              placeholder="change title value"
+                              defaultValue={props.children?.toString()}
+                              onSubmit={submitHandle}
+                              limit={20}
+                         />
+                    ) : (
+                         <S.Title onClick={clickTitleHandle} onDoubleClick={() => onEdit("edit")}>
+                              {props.children}
+                         </S.Title>
+                    )}
+               </div>
 
-               <>
+               <div>
                     {(show.onEdit || show.onMouse) && (
                          <S.Controls>
                               <Button variant={!editMode ? "contained" : "text"} onClick={() => onEdit("view")}>
@@ -85,7 +88,7 @@ export const EditbleSpan: React.FC<PropsType> = React.memo((props) => {
                               </Button>
                          </S.Controls>
                     )}
-               </>
+               </div>
           </S.Wrapper>
      );
 });
@@ -95,22 +98,20 @@ const S = {
           display: flex;
           align-items: center;
           gap: 10px;
-          position: relative;
+
           width: 504px;
      `,
      Title: styled.span`
           font-weight: 300;
           font-size: 17px;
-          /* width: 304px; */
-          word-break: break-all;
-          height: 50px;
-          transform: translateY(15px);
+
+          display: block;
+          margin: 20px 0;
+
           user-select: none;
           cursor: pointer;
      `,
      Controls: styled.div`
-          /* position: absolute;
-          left: 280px; */
           display: flex;
           gap: 10px;
      `,

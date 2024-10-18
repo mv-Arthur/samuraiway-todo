@@ -43,7 +43,7 @@ export const TodoList: React.FC<PropsType> = React.memo((props) => {
      }
 
      return (
-          <>
+          <div>
                <EditbleSpan id={props.id} onRemove={onRemoveHandle} onSubmit={onEditHandle}>
                     {props.title}
                </EditbleSpan>
@@ -89,6 +89,6 @@ export const TodoList: React.FC<PropsType> = React.memo((props) => {
                          pending
                     </Button>
                </div>
-          </>
+          </div>
      );
 });

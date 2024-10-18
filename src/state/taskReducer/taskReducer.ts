@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import { DeleteTodoListACType, SetTodoListACType } from "../todoListReducer/todoListReducer";
 
 type TaskStateType = {
      [todoListId: string]: TaskType[];
@@ -49,6 +50,20 @@ export const taskReducer = (state: TaskStateType, action: TaskReducerActionType)
                };
           }
 
+          case "SET-TODOLIST": {
+               return {
+                    ...state,
+                    [action.payload.id]: [],
+               };
+          }
+
+          case "DELETE-TODOLIST": {
+               const copy = { ...state };
+               delete copy[action.payload.todoListId];
+
+               return copy;
+          }
+
           // eslint-disable-next-line no-fallthrough
           default: {
                return state;
@@ -56,7 +71,13 @@ export const taskReducer = (state: TaskStateType, action: TaskReducerActionType)
      }
 };
 
-type TaskReducerActionType = SetTaskACType | DeleteTaskACType | UpdateTaskACType | SetChekedACType;
+type TaskReducerActionType =
+     | SetTaskACType
+     | DeleteTaskACType
+     | UpdateTaskACType
+     | SetChekedACType
+     | SetTodoListACType
+     | DeleteTodoListACType;
 
 type SetTaskACType = ReturnType<typeof setTaskAC>;
 export const setTaskAC = (todolistId: string, value: string) => {
