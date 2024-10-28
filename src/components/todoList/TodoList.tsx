@@ -1,94 +1,90 @@
 import React from "react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { FilterValuesType } from "../../App";
 import { Form } from "../form/Form";
 import { Task } from "../task/Task";
 import { EditbleSpan } from "../editbleSpan/EditbleSpan";
-import Button from "@mui/material/Button";
-import { TaskType } from "../../state/taskReducer/taskReducer";
 
-type PropsType = {
+import { deleteTaskAC, setChekedAC, setTaskAC, TaskType, updateTaskAC } from "../../state/taskReducer/taskReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { RootStateType } from "../../state/store";
+import { ButtonGroup } from "../buttonGroup/ButtonGroup";
+import { TransitionGroup } from "../transition/TransitonGroup";
+
+type Props = {
      id: string;
      title: string;
-     tasks: TaskType[];
-     setTask: (todoListId: string, value: string) => void;
-     updateTask: (todoListId: string, taskId: string, title: string) => void;
-     deleteTask: (todoListId: string, taskId: string) => void;
-     setCheked: (todoListId: string, taskId: string, cheked: boolean) => void;
+     filter: FilterValuesType;
      deleteTodoList: (todolistId: string) => void;
      editTodolist: (todolistId: string, title: string) => void;
      setTodoListFilter: (todoListId: string, filter: FilterValuesType) => void;
-     filter: FilterValuesType;
 };
 
-export const TodoList: React.FC<PropsType> = React.memo((props) => {
-     const [parent] = useAutoAnimate();
+export const TodoList: React.FC<Props> = React.memo(({ ...props }) => {
+     const dispatch = useDispatch();
+     const tasks = useSelector<RootStateType, TaskType[]>((state) => state.tasks[props.id]);
 
-     const onRemoveHandle = (todolistId: string) => {
+     const onRemoveHandle = React.useCallback((todolistId: string) => {
           props.deleteTodoList(todolistId);
-     };
+     }, []);
 
-     const onEditHandle = (title: string) => {
+     const onEditHandle = React.useCallback((title: string) => {
           props.editTodolist(props.id, title);
-     };
+     }, []);
 
-     let tasksFilterMatched = props.tasks;
+     const changeButtonGroupHandle = React.useCallback((value: FilterValuesType) => {
+          props.setTodoListFilter(props.id, value);
+     }, []);
 
-     if (props.filter === "completed") {
-          tasksFilterMatched = tasksFilterMatched.filter((task) => task.cheked);
-     }
+     const setTaskHandle = React.useCallback((value: string) => {
+          dispatch(setTaskAC(props.id, value));
+     }, []);
 
-     if (props.filter === "pending") {
-          tasksFilterMatched = tasksFilterMatched.filter((task) => !task.cheked);
-     }
+     const deleteTaskHandle = React.useCallback((taskId: string) => {
+          dispatch(deleteTaskAC(props.id, taskId));
+     }, []);
+
+     const updateTaskHandle = React.useCallback((taskId: string, title: string) => {
+          dispatch(updateTaskAC(props.id, taskId, title));
+     }, []);
+
+     const setChekedHandle = React.useCallback((taskId: string, cheked: boolean) => {
+          dispatch(setChekedAC(props.id, taskId, cheked));
+     }, []);
+
+     const filteredTasks = React.useMemo(() => {
+          if (props.filter === "completed") {
+               return tasks.filter((task) => task.cheked);
+          }
+
+          if (props.filter === "pending") {
+               return tasks.filter((task) => !task.cheked);
+          }
+
+          return tasks;
+     }, [tasks, props.filter]);
 
      return (
           <div>
                <EditbleSpan id={props.id} onRemove={onRemoveHandle} onSubmit={onEditHandle}>
                     {props.title}
                </EditbleSpan>
-               <Form
-                    placeholder="write a task title"
-                    clearAfterSubmit
-                    onSubmit={(value: string) => props.setTask(props.id, value)}
-               />
-               <div ref={parent}>
-                    {tasksFilterMatched.map((task) => (
+               <Form placeholder="write a task title" clearAfterSubmit onSubmit={setTaskHandle} />
+               <TransitionGroup>
+                    {filteredTasks.map((task) => (
                          <Task
                               key={task.id}
-                              updateTask={(taskId: string, title: string) => props.updateTask(props.id, taskId, title)}
                               cheked={task.cheked}
                               id={task.id}
-                              onRemove={(taskId: string) => props.deleteTask(props.id, taskId)}
-                              setCheked={(taskId: string, cheked: boolean) => props.setCheked(props.id, taskId, cheked)}
+                              onRemove={deleteTaskHandle}
+                              updateTask={updateTaskHandle}
+                              setCheked={setChekedHandle}
                          >
                               {task.title}
                          </Task>
                     ))}
-               </div>
-               <div style={{ display: "flex", gap: "10px" }}>
-                    <Button
-                         color="primary"
-                         variant={props.filter === "all" ? "contained" : "outlined"}
-                         onClick={() => props.setTodoListFilter(props.id, "all")}
-                    >
-                         all
-                    </Button>
-                    <Button
-                         color="success"
-                         variant={props.filter === "completed" ? "contained" : "outlined"}
-                         onClick={() => props.setTodoListFilter(props.id, "completed")}
-                    >
-                         completed
-                    </Button>
-                    <Button
-                         color="secondary"
-                         variant={props.filter === "pending" ? "contained" : "outlined"}
-                         onClick={() => props.setTodoListFilter(props.id, "pending")}
-                    >
-                         pending
-                    </Button>
-               </div>
+               </TransitionGroup>
+
+               <ButtonGroup value={props.filter} onChange={changeButtonGroupHandle} />
           </div>
      );
 });

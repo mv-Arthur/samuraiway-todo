@@ -18,13 +18,13 @@ export type ShowStateType = {
 };
 
 export const Task: React.FC<PropsType> = React.memo(({ id, onRemove, ...props }) => {
-     const submitHandle = (value: string) => {
+     const submitHandle = React.useCallback((value: string) => {
           props.updateTask(id, value);
-     };
+     }, []);
 
-     const changeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const changeHandle = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
           props.setCheked(id, e.currentTarget.checked);
-     };
+     }, []);
 
      return (
           <S.Wrapper>

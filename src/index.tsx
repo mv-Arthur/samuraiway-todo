@@ -1,18 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import App from "./App";
+import { App } from "./App";
 import { GlobalStyle } from "./styled/GlobalStyles";
 import { store } from "./state/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
+document.addEventListener("contextmenu", (e) => {
+     e.preventDefault();
+});
+
 root.render(
-     <React.StrictMode>
-          <Provider store={store}>
-               <GlobalStyle />
-               <App />
-          </Provider>
-     </React.StrictMode>,
+     <Provider store={store}>
+          <GlobalStyle />
+          <App />
+     </Provider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

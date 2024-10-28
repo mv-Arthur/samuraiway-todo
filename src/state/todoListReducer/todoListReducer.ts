@@ -1,14 +1,27 @@
 import { FilterValuesType } from "../../App";
+import { v4 as uuid } from "uuid";
 
-type TodoListType = {
+export type TodoListType = {
      id: string;
      title: string;
      filter: FilterValuesType;
 };
 
-export const todoListReducer = (state: TodoListType[], action: TodoListReducerActionType): TodoListType[] => {
+export const todoId1 = uuid();
+export const todoId2 = uuid();
+
+const todosStartState: TodoListType[] = [
+     // { id: todoId1, title: "what to learn", filter: "all" as const },
+     // { id: todoId2, title: "what to buy", filter: "all" as const },
+];
+
+export const todoListReducer = (
+     state: TodoListType[] = todosStartState,
+     action: TodoListReducerActionType,
+): TodoListType[] => {
      switch (action.type) {
           case "SET-TODOLIST": {
+               // return state;
                return [{ id: action.payload.id, title: action.payload.title, filter: "all" }, ...state];
           }
 

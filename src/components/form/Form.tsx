@@ -8,20 +8,20 @@ type PropsType = {
      defaultValue?: string;
      clearAfterSubmit?: boolean;
      placeholder: string;
+     type?: "edit" | "submit";
 };
 
-export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) => {
+export const Form: React.FC<PropsType> = React.memo(({ limit = 15, type = "submit", ...props }) => {
      const [value, setValue] = React.useState(props.defaultValue ? props.defaultValue : "");
 
      const haveAError = limit < value.length;
 
-     const changeHandle = (e: ChangeEvent<HTMLInputElement>) => {
+     const changeHandle = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
           setValue(e.currentTarget.value.trimStart());
-     };
+     }, []);
 
      const submitHandle = (e: FormEvent<HTMLFormElement>) => {
           e.preventDefault();
-
           if (!haveAError && !!value.trimEnd().length) {
                props.onSubmit(value);
                if (props.clearAfterSubmit) setValue("");
@@ -32,7 +32,7 @@ export const Form: React.FC<PropsType> = React.memo(({ limit = 15, ...props }) =
           <S.Form onSubmit={submitHandle}>
                <TextField
                     onChange={changeHandle}
-                    variant="outlined"
+                    variant={type === "edit" ? "standard" : "outlined"}
                     label={haveAError ? "text limit exceeded" : props.placeholder}
                     error={haveAError}
                     value={value}

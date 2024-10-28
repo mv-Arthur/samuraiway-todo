@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
-import { DeleteTodoListACType, SetTodoListACType } from "../todoListReducer/todoListReducer";
+import { DeleteTodoListACType, SetTodoListACType, todoId1, todoId2 } from "../todoListReducer/todoListReducer";
 
-type TaskStateType = {
+export type TaskStateType = {
      [todoListId: string]: TaskType[];
 };
 
@@ -11,7 +11,20 @@ export type TaskType = {
      cheked: boolean;
 };
 
-export const taskReducer = (state: TaskStateType, action: TaskReducerActionType): TaskStateType => {
+const taskTypeState = {
+     [todoId1]: [
+          { id: uuid(), title: "react", cheked: false },
+          { id: uuid(), title: "angular", cheked: false },
+          { id: uuid(), title: "vue", cheked: false },
+     ],
+     [todoId2]: [
+          { id: uuid(), title: "milk", cheked: false },
+          { id: uuid(), title: "bread", cheked: false },
+          { id: uuid(), title: "better", cheked: false },
+     ],
+};
+
+export const taskReducer = (state: TaskStateType = taskTypeState, action: TaskReducerActionType): TaskStateType => {
      switch (action.type) {
           case "SET-TASK": {
                return {
